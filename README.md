@@ -1,87 +1,154 @@
 # java-for-object-oriented-solution
 Courier Delivery Tracking system
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 class Parcel {
-    String trackingId, sender, receiver, status;
+    private String parcelId;
+    private String status;
 
-    Parcel(String id, String s, String r, String st) {
-        trackingId = id;
-        sender = s;
-        receiver = r;
-        status = st;
+    public Parcel(String parcelId) {
+        this.parcelId = parcelId;
+        this.status = "Dispatched";
     }
 
-    void display() {
-        System.out.println("\nID: " + trackingId);
-        System.out.println("Sender: " + sender);
-        System.out.println("Receiver: " + receiver);
+    public String getParcelId() {
+        return parcelId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void updateStatus(String newStatus) {
+        status = newStatus;
+    }
+
+    public void displayDetails() {
+        System.out.println("Parcel ID: " + parcelId);
         System.out.println("Status: " + status);
     }
 }
 
-public class Main {
-    static ArrayList<Parcel> list = new ArrayList<>();
-    static Scanner sc = new Scanner(System.in);
+public class CourierSystem {
 
     public static void main(String[] args) {
 
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Parcel> parcels = new ArrayList<>();
+
+        parcels.add(new Parcel("P101"));
+        parcels.add(new Parcel("P102"));
+        parcels.add(new Parcel("P103"));
+
+        parcels.get(0).updateStatus("In Transit");
+        parcels.get(1).updateStatus("Delivered");
+
         while (true) {
-            System.out.println("\n1.Add  2.Track  3.Update  4.View All  5.Exit");
-            int ch = sc.nextInt();
+
+            System.out.println("\n===== Courier Delivery Tracking System =====");
+            System.out.println("1. Add Parcel");
+            System.out.println("2. Track Parcel");
+            System.out.println("3. Update Status");
+            System.out.println("4. View All Parcels");
+            System.out.println("5. Exit");
+            System.out.print("Enter Choice: ");
+
+            int choice = sc.nextInt();
             sc.nextLine();
 
-            switch (ch) {
+            switch (choice) {
+
                 case 1:
-                    System.out.print("Enter ID: ");
+                    System.out.print("Enter Parcel ID: ");
                     String id = sc.nextLine();
 
-                    System.out.print("Sender: ");
-                    String s = sc.nextLine();
-
-                    System.out.print("Receiver: ");
-                    String r = sc.nextLine();
-
-                    list.add(new Parcel(id, s, r, "Dispatched"));
-                    System.out.println("Added!");
+                    parcels.add(new Parcel(id));
+                    System.out.println("Parcel Added Successfully!");
                     break;
 
                 case 2:
-                    System.out.print("Enter ID: ");
+                    System.out.print("Enter Parcel ID: ");
                     id = sc.nextLine();
 
                     boolean found = false;
-                    for (Parcel p : list) {
-                        if (p.trackingId.equals(id)) {
-                            p.display();
+
+                    for (Parcel p : parcels) {
+                        if (p.getParcelId().equalsIgnoreCase(id)) {
+                            System.out.println("Status: " + p.getStatus());
                             found = true;
+                            break;
                         }
                     }
-                    if (!found) System.out.println("Not found!");
+
+                    if (!found) {
+                        System.out.println("Parcel Not Found!");
+                    }
                     break;
 
                 case 3:
-                    System.out.print("Enter ID: ");
+                    System.out.print("Enter Parcel ID: ");
                     id = sc.nextLine();
 
-                    for (Parcel p : list) {
-                        if (p.trackingId.equals(id)) {
-                            System.out.print("New Status: ");
-                            p.status = sc.nextLine();
-                            System.out.println("Updated!");
+                    found = false;
+
+                    for (Parcel p : parcels) {
+                        if (p.getParcelId().equalsIgnoreCase(id)) {
+
+                            System.out.println("1. Dispatched");
+                            System.out.println("2. In Transit");
+                            System.out.println("3. Out for Delivery");
+                            System.out.println("4. Delivered");
+
+                            System.out.print("Select Status: ");
+                            int statusChoice = sc.nextInt();
+                            sc.nextLine();
+
+                            switch (statusChoice) {
+                                case 1:
+                                    p.updateStatus("Dispatched");
+                                    break;
+                                case 2:
+                                    p.updateStatus("In Transit");
+                                    break;
+                                case 3:
+                                    p.updateStatus("Out for Delivery");
+                                    break;
+                                case 4:
+                                    p.updateStatus("Delivered");
+                                    break;
+                                default:
+                                    System.out.println("Invalid Status!");
+                            }
+
+                            System.out.println("Status Updated Successfully!");
+                            found = true;
+                            break;
                         }
+                    }
+
+                    if (!found) {
+                        System.out.println("Parcel Not Found!");
                     }
                     break;
 
                 case 4:
-                    for (Parcel p : list) {
-                        p.display();
+                    System.out.println("\nAll Parcels:");
+                    for (Parcel p : parcels) {
+                        p.displayDetails();
+                        System.out.println("------------------");
                     }
                     break;
 
                 case 5:
-                    return;
+                    System.out.println("Thank You!");
+                    sc.close();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Invalid Choice!");
             }
         }
     }
 }
+
